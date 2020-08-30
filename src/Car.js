@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import './css/Car.css';
+// import './css/Car.css';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 
 class Car extends Component {
 
@@ -28,91 +30,114 @@ class Car extends Component {
     render () {
         return (        
             <div className={this.state.className}>
-                <div className={"field"}>
-                    <label> Veículo:
-                        <input
+                <Form>
+                    <Form.Group controlId="formNameCar">
+                        <Form.Label>Veículo</Form.Label>
+                        <Form.Control 
                             type="text"
                             name="nameCar"
-                            value={this.state.nameCar}
                             onChange={this.handleChange}
-                            title={"Nome do veículo"} 
+                            title={"Nome do veículo"}
+                            value={this.state.nameCar} 
                         />
-                    </label>
-                </div>
-                <div className={"field"}>
-                    <label> Placa:
-                        <input
+                        {/* <Form.Text className="text-muted">
+                            We'll never share your email with anyone else.
+                        </Form.Text> */}
+                    </Form.Group>
+                    <Form.Group controlId="formPlate">
+                        <Form.Label>Placa</Form.Label>
+                        <Form.Control 
                             type="text"
                             name="plate"
-                            value={this.state.plate} 
                             onChange={this.handleChange}
                             title={"Placa"}
+                            value={this.state.plate}
                             pattern={"/^[a-zA-Z]{3}[0-9][A-Za-z0-9][0-9]{2}/"}
                             placeholder={"Ex.: AAA0000"}
                         />
-                    </label>
-                </div>
-                <div className={"field"}>
-                    <label> Marca:
-                        <input
+                        {/* <Form.Text className="text-muted">
+                            We'll never share your email with anyone else.
+                        </Form.Text> */}
+                    </Form.Group>
+                    <Form.Group controlId="formBrand">
+                        <Form.Label>Marca</Form.Label>
+                        <Form.Control 
                             type="text"
                             name="brand"
-                            value={this.state.brand}
                             onChange={this.handleChange}
                             title={"Marca"}
+                            value={this.state.brand}
                             placeholder={"Ex.: Ford"}
                         />
-                    </label>
-                </div>
-                <div className={"field"}>
-                    <label> Modelo:
-                        <input
+                        {/* <Form.Text className="text-muted">
+                            We'll never share your email with anyone else.
+                        </Form.Text> */}
+                    </Form.Group>
+                    <Form.Group controlId="formModel">
+                        <Form.Label>Modelo</Form.Label>
+                        <Form.Control 
                             type="text"
                             name="model"
-                            value={this.state.model}
                             onChange={this.handleChange}
                             title={"Modelo"}
+                            value={this.state.model}
                             placeholder={"Ex.: Civic"}
                         />
-                    </label>
-                </div>
-                <div className={"field"}>
-                    <label> Data de fabricação:
-                        <input
+                        {/* <Form.Text className="text-muted">
+                            We'll never share your email with anyone else.
+                        </Form.Text> */}
+                    </Form.Group>
+                    <Form.Group controlId="formFactoryDate">
+                        <Form.Label>Data de fabricação</Form.Label>
+                        <Form.Control 
                             type="date"
                             name="factoryDate"
-                            value={this.state.factoryDate}
                             onChange={this.handleChange}
                             title={"Data de fabricação"}
+                            value={this.state.factoryDate}
                         />
-                    </label>
-                </div>
-                <div className={"field"}>
-                    <label> Consumo cidade: (Km/l)
-                        <input 
+                        {/* <Form.Text className="text-muted">
+                            We'll never share your email with anyone else.
+                        </Form.Text> */}
+                    </Form.Group>
+                    <Form.Group controlId="formAverageCity">
+                        <Form.Label>Consumo cidade (Km/l)</Form.Label>
+                        <Form.Control 
                             type="number"
                             name="averageCity"
                             min={0}
-                            value={this.state.averageCity}
                             onChange={this.handleChange}
                             title={"Consumo Médio de combustível dentro de cidade (Km/L)"}
+                            value={this.state.averageCity}
                             placeholder={"Ex.: 0,0"}
                         />
-                    </label>
-                </div>
-                <div className={"field"}>
-                    <label> Consumo rodovias: (Km/l)
-                        <input 
+                        {/* <Form.Text className="text-muted">
+                            We'll never share your email with anyone else.
+                        </Form.Text> */}
+                    </Form.Group>
+                    <Form.Group controlId="formAverageHighWay">
+                        <Form.Label>Consumo rodovias (Km/l)</Form.Label>
+                        <Form.Control 
                             type="number"
                             name="averageHighWay"
                             min={0}
-                            value={this.state.averageHighWay}
                             onChange={this.handleChange}
                             title={"Consumo Médio de combustível em rodovias (Km/L)"}
+                            value={this.state.averageHighWay}
                             placeholder={"Ex.: 0,0"}
                         />
-                    </label>
-                </div>
+                        {/* <Form.Text className="text-muted">
+                            We'll never share your email with anyone else.
+                        </Form.Text> */}
+                    </Form.Group>
+                    <Button 
+                        variant="primary" 
+                        type="submit" 
+                        title={"Clique nesse botão para salvar os dados do veículo"}
+                    >
+                        Salvar
+                    </Button>
+                </Form>
             </div>);
     }
 
