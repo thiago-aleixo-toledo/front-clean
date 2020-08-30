@@ -1,0 +1,49 @@
+
+
+.App {
+  text-align: center;
+}
+
+.wrapper {
+  display: flex;  
+  flex-flow: row wrap;
+  font-weight: bold;
+  text-align: center;
+}
+
+.wrapper > * {
+  padding: 10px;
+  flex: 1 100%;
+}
+
+.header {
+  background: tomato;
+}
+
+.main {
+  text-align: left;
+  background: deepskyblue;
+}
+
+input {
+	width: 100%;
+}
+
+label {
+	padding-top: 5px;
+}
+
+@media all and (max-width: 800px) {
+	.aside { display: none; }
+}
+
+@media all and (min-width: 800px) {
+	.main    { flex: 3 0px; min-width: 760px; }
+	.aside	 { flex: 1 0 0; padding: 0px;}
+	.aside-l { order: 1; } 
+	.main    { order: 2; }
+	.aside-r { order: 3; }
+}
+
+
+
