@@ -7,6 +7,7 @@ class Car extends Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
             id: 0,
             nameCar: "",
@@ -37,6 +38,7 @@ class Car extends Component {
             event.preventDefault();
             event.stopPropagation();   
         } else {
+
             let carValuesToSave = {
                 nameCar: form.elements.formNameCar.value,
                 plate: form.elements.formPlate.value, 
@@ -47,9 +49,20 @@ class Car extends Component {
                 averageHighWay: parseFloat(form.elements.formAverageHighWay.value),
             }
 
+            let operation = "";
+            let urlFetch = "";
+            if (form.elements.idCar !== undefined && form.elements.idCar.value !== 0) {
+                operation = "PUT";
+                urlFetch = "http://localhost:8080/cars/"+form.elements.idCar.value;
+            } else {
+                console.log("Vai criar novo...");
+                operation = "POST";
+                urlFetch = "http://localhost:8080/cars/";
+            }
+
             console.log(JSON.stringify(carValuesToSave));
-            fetch("http://localhost:8080/cars/", {
-                method: "POST",
+            fetch(urlFetch, {
+                method: operation,
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -71,6 +84,7 @@ class Car extends Component {
         return (        
             <div>
                 <Form noValidate validated={this.state.validated} onSubmit={this.handleSubmit}>
+                    <input type="hidden" name="idCar" value={this.state.id}/>
                     <Form.Group controlId="formNameCar">
                         <Form.Label>Veículo</Form.Label>
                         <Form.Control
@@ -193,26 +207,23 @@ class Car extends Component {
             </div>);
     }
 
-    // componentDidMount() {
-    //     this.setState({ isLoading: true })
-    //     fetch('http://localhost:8080/cars/1')
-    //     .then(res => res.json())
-    //     .then((data) => {
-    //         this.setState({
-    //             id: data.id,
-    //             nameCar: data.nameCar,
-    //             plate: data.plate, 
-    //             brand: data.brand,
-    //             model: data.model,
-    //             factoryDate: data.factoryDate,
-    //             averageCity: data.averageCity,
-    //             averageHighWay: data.averageHighWay,
-    //             validated: data.validated,
-    //             isLoading: false, 
-    //         })
-    //     })
-    //     .catch(console.log)
-    // } 
+    componentWillReceiveProps(nextProps) {
+
+        if(nextProps.veiculeInfo !== undefined) {
+           this.setState({
+                id: nextProps.veiculeInfo.id,
+                nameCar: nextProps.veiculeInfo.nameCar,
+                plate: nextProps.veiculeInfo.plate, 
+                brand: nextProps.veiculeInfo.brand,
+                model: nextProps.veiculeInfo.model,
+                factoryDate: nextProps.veiculeInfo.factoryDate,
+                averageCity: nextProps.veiculeInfo.averageCity,
+                averageHighWay: nextProps.veiculeInfo.averageHighWay,
+                validated: nextProps.veiculeInfo.validated,
+                isLoading: nextProps.veiculeInfo.isLoading,
+           })
+        }
+    } 
 }
 
 export default Car;

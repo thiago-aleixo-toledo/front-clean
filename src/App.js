@@ -11,52 +11,67 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-function App() {
-  return (
-    <div className="App">
-		<Card.Header>
-			<h2>Ficticius Clean - Limpeza</h2>
-		</Card.Header>
-		<Accordion defaultActiveKey="0">
-			<Card>
+class App extends Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			veiculeInfo: null
+		}
+		this.handleVeiculeInfo = this.handleVeiculeInfo.bind(this);
+	}
+
+	handleVeiculeInfo(veiculeInfo) {
+		this.setState({veiculeInfo: veiculeInfo});
+	}
+
+	render() {
+		return (
+			<div className="App">
 				<Card.Header>
-					<Accordion.Toggle as={Button} variant="link" eventKey="0">
-						<h4>Cadastro de veículo</h4>
-					</Accordion.Toggle>
+					<h2>Ficticius Clean - Limpeza</h2>
 				</Card.Header>
-				<Accordion.Collapse eventKey="0">
-					<Card.Body>
-						<Container fluid>
-							<Row>
-								<Col>
-									<Car></Car>
-								</Col>
-							</Row>
-						</Container>
-					</Card.Body>
-				</Accordion.Collapse>
-			</Card>
-			<Card>
-				<Card.Header>
-					<Accordion.Toggle as={Button} variant="link" eventKey="1">
-						<h4>Listagem de veículo</h4>
-					</Accordion.Toggle>
-				</Card.Header>
-				<Accordion.Collapse eventKey="1">
-					<Card.Body>
-						<Container fluid>
-							<Row>
-								<Col>
-									<SimpleTable></SimpleTable>
-								</Col>
-							</Row>
-						</Container>
-					</Card.Body>
-				</Accordion.Collapse>
-			</Card>
-		</Accordion>
-	</div>
-  );
+				<Accordion defaultActiveKey="0">
+					<Card>
+						<Card.Header>
+							<Accordion.Toggle as={Button} variant="link" eventKey="0">
+								<h4>Cadastro de veículo</h4>
+							</Accordion.Toggle>
+						</Card.Header>
+						<Accordion.Collapse eventKey="0">
+							<Card.Body>
+								<Container fluid>
+									<Row>
+										<Col>
+											<Car veiculeInfo={this.state.veiculeInfo}></Car>
+										</Col>
+									</Row>
+								</Container>
+							</Card.Body>
+						</Accordion.Collapse>
+					</Card>
+					<Card>
+						<Card.Header>
+							<Accordion.Toggle as={Button} variant="link" eventKey="1">
+								<h4>Listagem de veículo</h4>
+							</Accordion.Toggle>
+						</Card.Header>
+						<Accordion.Collapse eventKey="1">
+							<Card.Body>
+								<Container fluid>
+									<Row>
+										<Col>
+											<SimpleTable handleVeiculeInfo={this.handleVeiculeInfo}></SimpleTable>
+										</Col>
+									</Row>
+								</Container>
+							</Card.Body>
+						</Accordion.Collapse>
+					</Card>
+				</Accordion>
+			</div>
+		);
+	}
 }
 
 export default App;

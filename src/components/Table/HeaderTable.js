@@ -49,11 +49,6 @@ class HeaderTable extends Component {
                                 onClick={() => this.handleRequestSort(headCell.id)}
                             >
                                 {headCell.label}
-                                {/* {this.state.headerOrderBy === headCell.id ? (
-                                    <span className={classes.visuallyHidden}>
-                                    {this.state.headerOrder === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                    </span>
-                                ) : null} */}
                             </TableSortLabel>
                         </TableCell>
                     ))}

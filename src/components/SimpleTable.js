@@ -8,22 +8,6 @@ import Paper from '@material-ui/core/Paper';
 import HeaderTable from './Table/HeaderTable';
 import TablePagination from '@material-ui/core/TablePagination';
 
-
-
-function createData(nameCar, plate, brand,	model, factoryDate, averageCity, averageHighWay) {
-	return {nameCar, plate, brand,	model, factoryDate, averageCity, averageHighWay} ;
-}
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 0, 0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 0, 0),
-  createData('Eclair', 262, 16.0, 24, 6.0, 0, 0),
-  createData('Cupcake', 305, 3.7, 67, 4.3, 0, 0),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 0, 0),
-  createData('Tom', 267, 16.0, 49, 3.9, 0, 0),
-];
-
-
-
 class SimpleTable extends Component {
 
 	constructor(props) {
@@ -32,11 +16,13 @@ class SimpleTable extends Component {
             order: 'asc',
 			orderBy: 'nameCar',
 			page: 0,
-			rowsPerPage: 5
+			rowsPerPage: 5,
+			rows: []
 		};
 		this.handleChangePage = this.handleChangePage.bind(this);
 		this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
 		this.handlerOrderBy = this.handlerOrderBy.bind(this);
+		this.setVeiculesInfo = this.setVeiculesInfo.bind(this); 
     }
   
   	descendingComparator(a, b, orderBy) {
@@ -79,6 +65,14 @@ class SimpleTable extends Component {
         this.setState({orderBy: orderBy});
 	}
 
+	createData(id, nameCar, plate, brand,	model, factoryDate, averageCity, averageHighWay) {
+		return {id, nameCar, plate, brand,	model, factoryDate, averageCity, averageHighWay} ;
+	}
+
+	setVeiculesInfo(veiculeInfo) {
+		this.props.handleVeiculeInfo(veiculeInfo);
+	}
+
  	render() {
 		return (
 			<Paper>
@@ -90,10 +84,10 @@ class SimpleTable extends Component {
 							handlerOrderBy={this.handlerOrderBy}
 						></HeaderTable>
 						<TableBody>
-							{this.stableSort(rows, this.getComparator(this.state.order, this.state.orderBy))
+							{this.stableSort(this.state.rows, this.getComparator(this.state.order, this.state.orderBy))
 								.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
 								.map((row, index) => (
-										<TableRow key={index}>
+										<TableRow key={index} onDoubleClick={() => this.setVeiculesInfo(row)}>
 										<TableCell key={0} component="th" scope="row">
 											{row.nameCar}
 										</TableCell>
@@ -110,9 +104,9 @@ class SimpleTable extends Component {
 						</TableBody>
 					</Table>
 					<TablePagination
-						rowsPerPageOptions={[5, 10, 25, { value: rows.length, label: 'Todos' }]}
+						rowsPerPageOptions={[5, 10, 25, { value: this.state.rows.length, label: 'Todos' }]}
 						component="Paper"
-						count={rows.length}
+						count={this.state.rows.length}
 						rowsPerPage={this.state.rowsPerPage}
 						page={this.state.page}
 						onChangePage={this.handleChangePage}
@@ -122,5 +116,30 @@ class SimpleTable extends Component {
 			</Paper>
   		);
 	}
+
+	componentDidMount() {
+        this.setState({ isLoading: true })
+        fetch('http://localhost:8080/cars')
+        .then(res => res.json())
+        .then((data) => {
+			let veiculesArray = [];
+			data.content.forEach(element => {
+				console.log(element);
+				let veicules = this.createData(
+					element.idCar,
+					element.nameCar,
+					element.plate,
+					element.brand,
+					element.model,
+					new Date(element.factoryDate).toLocaleDateString(),
+					parseFloat(element.averageCity).toLocaleString(),
+					parseFloat(element.averageHighWay).toLocaleString()
+				);
+				veiculesArray.push(veicules);
+			})
+			this.setState({ rows: veiculesArray});
+        })
+        .catch(console.log)
+    } 
 }
 export default SimpleTable;
