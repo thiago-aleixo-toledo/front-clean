@@ -92,8 +92,8 @@ class SimpleTable extends Component {
 						<TableBody>
 							{this.stableSort(rows, this.getComparator(this.state.order, this.state.orderBy))
 								.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
-								.map((row) => (
-										<TableRow key={row.name}>
+								.map((row, index) => (
+										<TableRow key={index}>
 										<TableCell key={0} component="th" scope="row">
 											{row.nameCar}
 										</TableCell>

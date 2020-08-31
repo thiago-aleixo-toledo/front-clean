@@ -9,17 +9,19 @@ class Car extends Component {
         super(props);
         this.state = {
             id: 0,
-            nameCar: null,
-            plate: null, 
-            brand: null,
-            model: null,
-            factoryDate: null,
-            averageCity: null,
-            averageHighWay: null,
-            className: props.className
+            nameCar: "",
+            plate: "", 
+            brand: "",
+            model: "",
+            factoryDate: Date.now,
+            averageCity: 0,
+            averageHighWay: 0,
+            validated: false,
+            isLoading: false,
         };
     
         this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleChange(event) {
@@ -27,41 +29,82 @@ class Car extends Component {
         this.setState({[nameState]: event.target.value});
     }
 
+    handleSubmit(event) {
+        this.setState({isLoading: true});
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            this.setState({isLoading: false});
+            event.preventDefault();
+            event.stopPropagation();   
+        } else {
+            let carValuesToSave = {
+                nameCar: form.elements.formNameCar.value,
+                plate: form.elements.formPlate.value, 
+                brand: form.elements.formBrand.value,
+                model: form.elements.formModel.value,
+                factoryDate: new Date(form.elements.formFactoryDate.value).toJSON(),
+                averageCity: parseFloat(form.elements.formAverageCity.value),
+                averageHighWay: parseFloat(form.elements.formAverageHighWay.value),
+            }
+
+            console.log(JSON.stringify(carValuesToSave));
+            fetch("http://localhost:8080/cars/", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(carValuesToSave),       
+            })
+            .then(response => response.json())
+            .then(response => {
+                this.setState({validated: false});
+                this.setState({isLoading: false});
+                alert("Veículo salvo com sucesso");
+            })
+            .catch(console.log)
+        }
+        this.setState({validated: true});        
+    }  
+
     render () {
         return (        
-            <div className={this.state.className}>
-                <Form>
+            <div>
+                <Form noValidate validated={this.state.validated} onSubmit={this.handleSubmit}>
                     <Form.Group controlId="formNameCar">
                         <Form.Label>Veículo</Form.Label>
-                        <Form.Control 
+                        <Form.Control
+                            required 
                             type="text"
                             name="nameCar"
                             onChange={this.handleChange}
                             title={"Nome do veículo"}
                             value={this.state.nameCar} 
                         />
-                        {/* <Form.Text className="text-muted">
-                            We'll never share your email with anyone else.
-                        </Form.Text> */}
+                        <Form.Control.Feedback type="invalid">
+                            Campo veículo não foi preenchido
+                        </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="formPlate">
                         <Form.Label>Placa</Form.Label>
-                        <Form.Control 
+                        <Form.Control
+                            required 
                             type="text"
                             name="plate"
                             onChange={this.handleChange}
                             title={"Placa"}
                             value={this.state.plate}
-                            pattern={"/^[a-zA-Z]{3}[0-9][A-Za-z0-9][0-9]{2}/"}
-                            placeholder={"Ex.: AAA0000"}
+                            pattern={"^[a-zA-Z]{3}-[0-9]{4}"}
+                            placeholder={"Ex.: AAA-0000"}
                         />
-                        {/* <Form.Text className="text-muted">
-                            We'll never share your email with anyone else.
-                        </Form.Text> */}
+                        <Form.Control.Feedback type="invalid">
+                            Campo placa não foi preenchido
+                        </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="formBrand">
                         <Form.Label>Marca</Form.Label>
-                        <Form.Control 
+                        <Form.Control
+                            required 
                             type="text"
                             name="brand"
                             onChange={this.handleChange}
@@ -69,13 +112,14 @@ class Car extends Component {
                             value={this.state.brand}
                             placeholder={"Ex.: Ford"}
                         />
-                        {/* <Form.Text className="text-muted">
-                            We'll never share your email with anyone else.
-                        </Form.Text> */}
+                        <Form.Control.Feedback type="invalid">
+                            Campo marca não foi preenchido
+                        </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="formModel">
                         <Form.Label>Modelo</Form.Label>
-                        <Form.Control 
+                        <Form.Control
+                            required 
                             type="text"
                             name="model"
                             onChange={this.handleChange}
@@ -83,73 +127,92 @@ class Car extends Component {
                             value={this.state.model}
                             placeholder={"Ex.: Civic"}
                         />
-                        {/* <Form.Text className="text-muted">
-                            We'll never share your email with anyone else.
-                        </Form.Text> */}
+                        <Form.Control.Feedback type="invalid">
+                            Campo modelo não foi preenchido
+                        </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="formFactoryDate">
                         <Form.Label>Data de fabricação</Form.Label>
-                        <Form.Control 
+                        <Form.Control
+                            required 
                             type="date"
                             name="factoryDate"
+                            step="any"
                             onChange={this.handleChange}
                             title={"Data de fabricação"}
                             value={this.state.factoryDate}
                         />
-                        {/* <Form.Text className="text-muted">
-                            We'll never share your email with anyone else.
-                        </Form.Text> */}
+                        <Form.Control.Feedback type="invalid">
+                            Campo data de fabricação não foi preenchido
+                        </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="formAverageCity">
-                        <Form.Label>Consumo cidade (Km/l)</Form.Label>
-                        <Form.Control 
+                        <Form.Label>Consumo na cidade (Km/l)</Form.Label>
+                        <Form.Control
+                            required 
                             type="number"
                             name="averageCity"
+                            step="any"
                             min={0}
                             onChange={this.handleChange}
                             title={"Consumo Médio de combustível dentro de cidade (Km/L)"}
                             value={this.state.averageCity}
-                            placeholder={"Ex.: 0,0"}
+                            placeholder={"Ex.: 0.0"}
                         />
-                        {/* <Form.Text className="text-muted">
-                            We'll never share your email with anyone else.
-                        </Form.Text> */}
+                        <Form.Control.Feedback type="invalid">
+                            Campo consumo na cidade não foi preenchido
+                        </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="formAverageHighWay">
-                        <Form.Label>Consumo rodovias (Km/l)</Form.Label>
-                        <Form.Control 
+                        <Form.Label>Consumo na estrada (Km/l)</Form.Label>
+                        <Form.Control
+                            required 
                             type="number"
                             name="averageHighWay"
+                            step="any"
                             min={0}
                             onChange={this.handleChange}
-                            title={"Consumo Médio de combustível em rodovias (Km/L)"}
+                            title={"Consumo Médio de combustível na estrada (Km/L)"}
                             value={this.state.averageHighWay}
-                            placeholder={"Ex.: 0,0"}
+                            placeholder={"Ex.: 0.0"}
                         />
-                        {/* <Form.Text className="text-muted">
-                            We'll never share your email with anyone else.
-                        </Form.Text> */}
+                        <Form.Control.Feedback type="invalid">
+                            Campo consumo na estrada não foi preenchido
+                        </Form.Control.Feedback>
                     </Form.Group>
                     <Button 
                         variant="primary" 
                         type="submit" 
                         title={"Clique nesse botão para salvar os dados do veículo"}
+                        variant="primary"
+                        disabled={this.state.isLoading}
                     >
-                        Salvar
+                        {this.state.isLoading ? 'Salvando…' : 'Salvar'}
                     </Button>
                 </Form>
             </div>);
     }
 
-    componentDidMount() {
-        fetch('http://localhost:8080/cars/1')
-        .then(res => res.json())
-        .then((data) => {
-            console.log(data);
-            this.setState({ nameCar: data.nameCar })
-        })
-        .catch(console.log)
-    } 
+    // componentDidMount() {
+    //     this.setState({ isLoading: true })
+    //     fetch('http://localhost:8080/cars/1')
+    //     .then(res => res.json())
+    //     .then((data) => {
+    //         this.setState({
+    //             id: data.id,
+    //             nameCar: data.nameCar,
+    //             plate: data.plate, 
+    //             brand: data.brand,
+    //             model: data.model,
+    //             factoryDate: data.factoryDate,
+    //             averageCity: data.averageCity,
+    //             averageHighWay: data.averageHighWay,
+    //             validated: data.validated,
+    //             isLoading: false, 
+    //         })
+    //     })
+    //     .catch(console.log)
+    // } 
 }
 
 export default Car;
