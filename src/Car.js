@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // import './css/Car.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 
 class Car extends Component {
 
@@ -23,6 +24,7 @@ class Car extends Component {
     
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     handleChange(event) {
@@ -78,7 +80,36 @@ class Car extends Component {
             .catch(console.log)
         }
         this.setState({validated: true});        
-    }  
+    }
+
+    handleDelete(id) {
+        if (id !== 0) {
+            this.setState({isLoading: true});
+            fetch("http://localhost:8080/cars/"+id, {
+                method: "DELETE",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }       
+            })
+            .then(response => {
+                alert("Veículo excluído com sucesso");
+                this.setState({
+                    id: 0,
+                    nameCar: "",
+                    plate: "", 
+                    brand: "",
+                    model: "",
+                    factoryDate: Date.now,
+                    averageCity: 0,
+                    averageHighWay: 0,
+                    validated: false,
+                    isLoading: false,
+                });
+            })
+            .catch(console.log)
+        }
+    }
 
     render () {
         return (        
@@ -194,15 +225,27 @@ class Car extends Component {
                             Campo consumo na estrada não foi preenchido
                         </Form.Control.Feedback>
                     </Form.Group>
-                    <Button 
-                        variant="primary" 
-                        type="submit" 
-                        title={"Clique nesse botão para salvar os dados do veículo"}
-                        variant="primary"
-                        disabled={this.state.isLoading}
-                    >
-                        {this.state.isLoading ? 'Salvando…' : 'Salvar'}
-                    </Button>
+                    <ButtonToolbar className="mb-3">
+                        <Button 
+                            variant="primary" 
+                            type="submit" 
+                            title={"Clique nesse botão para salvar os dados do veículo"}
+                            disabled={this.state.isLoading}
+                        >
+                            {this.state.isLoading ? 'Salvando…' : 'Salvar'}
+                        </Button>
+                    </ButtonToolbar>
+                    <ButtonToolbar className="mb-3">
+                        <Button 
+                            variant="danger" 
+                            type="submit" 
+                            title={"Clique nesse botão para excluir os dados do veículo"}
+                            disabled={this.state.isLoading || this.state.id == 0}
+                            onClick={() => this.handleDelete(this.state.id)}
+                        >
+                            {this.state.isLoading ? 'Excluindo…' : 'Excluir'}
+                        </Button>
+                    </ButtonToolbar>
                 </Form>
             </div>);
     }
